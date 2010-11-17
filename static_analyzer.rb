@@ -4,8 +4,10 @@ require 'parse_tree'
 class Node
   attr_reader :children
   attr_reader :parent
+  attr_reader :file
 
-  def initialize(children)
+  def initialize(file, children)
+    @file = file
     @children = children
     children.each do |child|
       child.parent = self if child.is_a? Node
@@ -245,7 +247,7 @@ class Analyzer
 
   def check_patterns(node)
     if node.class == Node_array and node.children.length > 25
-      puts "Found one: #{node}"
+      puts "Found one: #{node} in file #{node.file}"
     end
   end
 
@@ -263,11 +265,11 @@ class Analyzer
     end
   end
 
-  def convert_to_nodes(sexp)
+  def convert_to_nodes(file, sexp)
     if sexp.is_a? Sexp
       cls = NODE_CLASSES[sexp.sexp_type]
-      children = sexp.sexp_body.map { |child| convert_to_nodes(child) }
-      cls.new(children)
+      children = sexp.sexp_body.map { |child| convert_to_nodes(file, child) }
+      cls.new(file, children)
     else
       sexp
     end
@@ -286,7 +288,7 @@ class Analyzer
       parser = ParseTree.new(false) # true = include newlines
       sexp = parser.process(contents, nil, path)
       puts "Analyzing #{path}"
-      traverse(convert_to_nodes(sexp)) if sexp # empty files yield nil, heh.
+      traverse(convert_to_nodes(path, sexp)) if sexp # empty files yield nil, heh.
     end
   end
 end
