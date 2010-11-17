@@ -3,9 +3,18 @@ require 'parse_tree'
 
 class Node
   attr_reader :children
+  attr_reader :parent
 
   def initialize(children)
     @children = children
+    children.each do |child|
+      child.parent = self if child.is_a? Node
+    end
+  end
+
+  def parent=(parent)
+    raise "Parent already assigned" if @parent
+    @parent = parent
   end
 end
 
