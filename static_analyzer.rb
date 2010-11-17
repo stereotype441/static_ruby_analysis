@@ -18,6 +18,15 @@ class Node
     raise "Parent already assigned" if @parent
     @parent = parent
   end
+
+  def to_s
+    "(#{([self.class] + children).join(' ')})"
+  end
+
+  def self.to_s
+    # Class name always begins with "Node_", so drop that part.
+    name[5..-1]
+  end
 end
 
 class Node_op_asgn2 < Node
