@@ -245,6 +245,12 @@ end
 class Node_retry < Node
 end
 
+class Node_dot3 < Node
+end
+
+class Node_redo < Node
+end
+
 NODE_CLASSES = Hash.new { |hash, key| hash[key] = Kernel.const_get("Node_#{key}") }
 
 class Analyzer
